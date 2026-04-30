@@ -1,11 +1,15 @@
-import { Link, Outlet } from "react-router";
+import { Link, Outlet, useLocation } from "react-router";
 import Lottie, { LottieRefCurrentProps } from "../components/LottieWrapper";
 import hamburgerAnimation from "../assets/hampurilainen.json";
+import homeAnimation from "../assets/talo.json";
 import { useEffect, useRef, useState } from "react";
 
 const Layout = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
   const hamburgerRef = useRef<LottieRefCurrentProps>(null);
+  const homeRef = useRef<LottieRefCurrentProps>(null);
+
+  const location = useLocation();
 
   const toggle = () => {
     setToggleMenu((currentValue) => !currentValue);
@@ -22,6 +26,15 @@ const Layout = () => {
       hamburgerRef.current.play();
     }
   }, [toggleMenu]);
+
+  const homeHandler = () => {
+    if (!homeRef.current) return;
+    homeRef.current.play();
+  };
+
+  useEffect(() => {
+    setToggleMenu(false);
+  }, [location]);
 
   return (
     <div className="m-auto h-full w-11/12">
@@ -44,8 +57,23 @@ const Layout = () => {
           `}
         >
           <li>
-            <Link className="block p-4 text-center  hover:bg-slate-300" to="/">
-              Home
+            <Link
+              onMouseEnter={homeHandler}
+              className="block p-4 text-center  hover:bg-slate-300"
+              to="/"
+            >
+              <div className="flex items-baseline">
+                <Lottie
+                  className="h-8 w-8"
+                  animationData={homeAnimation}
+                  loop={false}
+                  lottieRef={homeRef}
+                  onComplete={() => {
+                    homeRef.current?.goToAndStop(0, true);
+                  }}
+                />
+                <span className="pl-1">Home</span>
+              </div>
             </Link>
           </li>
           <li>
