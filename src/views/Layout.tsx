@@ -1,16 +1,27 @@
 import { Link, Outlet } from "react-router";
-import Lottie from "../components/LottieWrapper";
+import Lottie, { LottieRefCurrentProps } from "../components/LottieWrapper";
 import hamburgerAnimation from "../assets/hampurilainen.json";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Layout = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
+  const hamburgerRef = useRef<LottieRefCurrentProps>(null);
 
   const toggle = () => {
     setToggleMenu((currentValue) => !currentValue);
   };
 
-  console.log(toggleMenu);
+  useEffect(() => {
+    if (!hamburgerRef.current) return;
+    hamburgerRef.current.setSpeed(3);
+    if (!toggleMenu) {
+      hamburgerRef.current.setDirection(-1);
+      hamburgerRef.current.play();
+    } else {
+      hamburgerRef.current.setDirection(1);
+      hamburgerRef.current.play();
+    }
+  }, [toggleMenu]);
 
   return (
     <div className="m-auto h-full w-11/12">
@@ -29,6 +40,7 @@ const Layout = () => {
           ease-in-out
           lg:flex
           lg:opacity-100
+          ${toggleMenu ? "opacity-100" : "opacity-0"}
           `}
         >
           <li>
@@ -50,6 +62,7 @@ const Layout = () => {
             animationData={hamburgerAnimation}
             loop={false}
             onClick={toggle}
+            lottieRef={hamburgerRef}
           />
         </div>
       </nav>
